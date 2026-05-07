@@ -71,6 +71,15 @@ copy_artifact "$BUILD_DIR/protoplug_gen_artefacts/$CONFIG/LV2/Lua Protoplug Gen.
 cp -R "$ROOT_DIR/ProtoplugFiles" "$PACKAGE_DIR/"
 cp "$ROOT_DIR/readme.md" "$ROOT_DIR/license.txt" "$PACKAGE_DIR/"
 
+if command -v codesign >/dev/null 2>&1; then
+    find "$PACKAGE_DIR/Plugins" \
+        \( -name "*.component" -o -name "*.vst3" -o -name "*.clap" \) \
+        -exec codesign --force --deep --sign - {} \;
+
+    find "$PACKAGE_DIR/Plugins/LV2" -name "*.so" \
+        -exec codesign --force --sign - {} \;
+fi
+
 (
     cd "$DIST_DIR"
     cmake -E tar cf "$ZIP_PATH" --format=zip "$PACKAGE_NAME"
