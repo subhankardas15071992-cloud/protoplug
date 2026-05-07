@@ -5,6 +5,8 @@ current\ theme.txt
 *.dll
 *.lib
 *.exp
+!ProtoplugFiles/lib/
+!ProtoplugFiles/lib/*.dll
 
 # backups
 *.bak

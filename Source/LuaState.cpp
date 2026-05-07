@@ -36,18 +36,31 @@ LuaState::LuaState(File defaultDir)
 {
 	l = 0;
 #if JUCE_WINDOWS
-	String libName = "lua51.dll";
-	String libName2 = "luajit.dll";
+	StringArray libNames;
+	libNames.add("lua51.dll");
+	libNames.add("luajit.dll");
+#elif JUCE_MAC
+	StringArray libNames;
+	libNames.add("libluajit-5.1.dylib");
+	libNames.add("libluajit-5.1.so");
+	libNames.add("libluajit-5.1.2.dylib");
 #else
-	String libName = "libluajit-5.1.so";
-	String libName2 = "libluajit-5.1.so.2";
+	StringArray libNames;
+	libNames.add("libluajit-5.1.so");
+	libNames.add("libluajit-5.1.so.2");
 #endif
-	String defaultPath = defaultDir.getChildFile(libName).getFullPathName();
+	String attemptedPaths;
 	if (!dll) {
 		dll = new DynamicLibrary();
-		if (!dll->open(defaultPath))
-			if (!dll->open(libName2))
-				dll->open(libName);
+		for (int i=0; i<libNames.size(); ++i) {
+			const String libName = libNames[i];
+			String defaultPath = defaultDir.getChildFile(libName).getFullPathName();
+			if (attemptedPaths.isNotEmpty())
+				attemptedPaths << ", ";
+			attemptedPaths << defaultPath << ", " << libName;
+			if (dll->open(defaultPath) || dll->open(libName))
+				break;
+		}
 		// why
 		luaL_newstate		= ptr_luaL_newstate		(dll->getFunction("luaL_newstate"));
 		luaL_openlibs		= ptr_luaL_openlibs		(dll->getFunction("luaL_openlibs"));
@@ -106,16 +119,16 @@ LuaState::LuaState(File defaultDir)
 	for (int i=0; i<24; i++)
 		if (kk[i]==0) {
 			failed = 1;
-			errmsg = 	"Error: Could not load " + libName + 
-						". Tried " + defaultPath + " and system path.";
+			errmsg = 	"Error: Could not load " + libNames.joinIntoString(" or ") +
+						". Tried " + attemptedPaths + ".";
 			return;
 		}
 #if REQUIRE_JIT
 	// in windows the luajit dll has the same name as plain lua, so do a sanity check
 	if (!luajit_setmode) {
 		failed = 1;
-		errmsg = 	"Error: linked with wrong " + libName + ". Library is Lua, but LuaJIT is required. " + 
-					"Please add the luajit library in the system path or at " + defaultPath;
+		errmsg = 	"Error: linked with wrong " + libNames[0] + ". Library is Lua, but LuaJIT is required. " +
+					"Please add the luajit library in the system path or at " + defaultDir.getChildFile(libNames[0]).getFullPathName();
 		return;
 	}
 #endif

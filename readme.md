@@ -34,6 +34,16 @@ scripts/build-windows.ps1
 
 Each script builds Release plugins and creates a zip in `dist/` containing the plugin artifacts, `ProtoplugFiles`, this README, and the license.
 
+Runtime libraries
+-----------------
+`ProtoplugFiles/lib` contains the LuaJIT and FFTW runtime libraries used by Protoplug and the bundled FFT examples.
+
+- macOS uses universal `arm64;x86_64` Mach-O libraries: `libluajit-5.1.dylib` and `libfftw3.3.dylib`
+- Linux uses x86_64 ELF libraries: `libluajit-5.1.so` and `libfftw3.so.3`
+- Windows uses x86_64 DLLs: `lua51.dll` and `libfftw3-3.dll`
+
+The macOS runtime libraries can be rebuilt with `scripts/build-macos-runtime-libs.sh`.
+
 Manual CMake build
 ------------------
 ```sh
