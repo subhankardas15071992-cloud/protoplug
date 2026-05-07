@@ -1,8 +1,10 @@
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "guiclasses/ProtoWindow.h"
+
+class ProtoPopout;
 
 class LuaProtoplugJuceAudioProcessorEditor  :	public AudioProcessorEditor,
 												public Button::Listener
@@ -21,10 +23,12 @@ public:
     LuaProtoplugJuceAudioProcessor *processor;
 
 private:
+	void handleProtoplugDirectoryChosen(const File& chosen);
+
 	ProtoWindow content; // the actual gui is in there
-	ScopedPointer<ProtoPopout> poppedWin;
+	std::unique_ptr<ProtoPopout> poppedWin;
+	std::unique_ptr<FileChooser> directoryChooser;
 	TextButton yank;
 	TextButton popin;
 	TextButton locateFiles;
 };
-

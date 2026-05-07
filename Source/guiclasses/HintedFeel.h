@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../vflib/vf_FreeTypeFaces.h"
+#include <JuceHeader.h>
 #include "../vflib/BinaryDejaVu.h"
 #include "../vflib/BinarySourceCodePro.h"
-#include <vector>
 #include <map>
 
 struct BuiltInFont
@@ -22,14 +21,14 @@ const BuiltInFont protoFonts[] =
 		BinarySourceCodePro::sourcecodeproregular_ttf }
 };
 
-typedef std::map<String, std::vector<char>*> FontDataMap;
+typedef std::map<String, Typeface::Ptr> FontDataMap;
 
 class HintedFeel : public LookAndFeel_V3
 {
 public:
 	HintedFeel()	{ }
 	~HintedFeel();
-	Typeface::Ptr getTypefaceForFont (Font const& font);
+	Typeface::Ptr getTypefaceForFont (const Font& font) override;
 	static FontDataMap faces;
 
 	Font getPopupMenuFont()
@@ -60,4 +59,3 @@ public:
 		idealHeight += 4;
 	}
 };
-

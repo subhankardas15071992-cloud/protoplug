@@ -2,6 +2,7 @@
 #include "../PluginProcessor.h"
 #include "../ProtoplugDir.h"
 #include "AboutBox.h"
+#include <climits>
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -66,8 +67,8 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
     horizontalLayout.setItemLayout (0,		-0.1,	-1.0,	processor->lastUISplit-20);		// top (code editor)
     horizontalLayout.setItemLayout (1,		8,		8,		8);										// mid (splitter)
     horizontalLayout.setItemLayout (2,		22,		-0.9,	processor->lastUIHeight-processor->lastUISplit);	// bottom (log)
-    horizontalDividerBar = new DarkSplitter (&horizontalLayout, 1, false);
-    addAndMakeVisible (horizontalDividerBar);
+    horizontalDividerBar.reset(new DarkSplitter (&horizontalLayout, 1, false));
+    addAndMakeVisible (horizontalDividerBar.get());
 
     addAndMakeVisible (&tab1);
     addAndMakeVisible (&tab2);
@@ -108,7 +109,7 @@ void ProtoWindow::readTheme(File f)
 	if (!f.exists())
 		return;
 	editor.setFont(Font(Font::getDefaultMonospacedFontName(), 14, 0));
-	ScopedPointer<XmlElement> root (XmlDocument(f).getDocumentElement());
+	std::unique_ptr<XmlElement> root (XmlDocument(f).getDocumentElement());
 	if (!root)
 		return;
     CodeEditorComponent::ColourScheme cs = tok.getDefaultColourScheme();
@@ -181,14 +182,13 @@ void ProtoWindow::readPrefs()
 	File f = ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml");
 	if (!f.exists())
 		return;
-	XmlElement *e = XmlDocument(f).getDocumentElement();
+	std::unique_ptr<XmlElement> e (XmlDocument(f).getDocumentElement());
 	if (e) {
 		commMgr.getKeyMappings()->restoreFromXml(*e);
-		delete e;
 	}
 	/*	// writePrefs()
 	XmlElement *e = commMgr.getKeyMappings()->createXml(false);
-	e->writeToFile(ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml"), String::empty);
+	e->writeToFile(ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml"), {});
 	delete e;*/
 }
 
@@ -209,7 +209,7 @@ void ProtoWindow::resized()
 {
 	int menuHeight = 20;
 	
-    Component* hcomps[] = { activePanelComponent, horizontalDividerBar, &bottomPane };
+    Component* hcomps[] = { activePanelComponent, horizontalDividerBar.get(), &bottomPane };
     horizontalLayout.layOutComponents (hcomps, 3,
                                         0, menuHeight, getWidth(), getHeight() - menuHeight,
                                         true,      // lay out on top of each other

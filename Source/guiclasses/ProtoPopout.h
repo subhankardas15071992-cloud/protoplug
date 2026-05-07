@@ -1,24 +1,24 @@
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "../PluginEditor.h"
+#include <JuceHeader.h>
+
+class LuaProtoplugJuceAudioProcessorEditor;
 
 class ProtoPopout  :	public DocumentWindow
 {
 public:
-	ProtoPopout (	LuaProtoplugJuceAudioProcessorEditor *_vstPanel,
+	ProtoPopout (	LuaProtoplugJuceAudioProcessorEditor* vstPanel,
 					const String& name,
-                    Colour backgroundColour,
-                    int requiredButtons,
-                    bool addToDesktop = true)
-		:DocumentWindow(name, backgroundColour, requiredButtons, addToDesktop)
-	{ vstPanel = _vstPanel; }
-
-	void closeButtonPressed()
+					Colour backgroundColour,
+					int requiredButtons,
+					bool addToDesktop = true)
+		: DocumentWindow(name, backgroundColour, requiredButtons, addToDesktop),
+		  vstPanel(vstPanel)
 	{
-		vstPanel->postCommandMessage(MSG_POPOUT);
-		// todo, check if everything is crashed and force close
 	}
+
+	void closeButtonPressed() override;
+
 private:
-	LuaProtoplugJuceAudioProcessorEditor *vstPanel;
+	LuaProtoplugJuceAudioProcessorEditor* vstPanel;
 };

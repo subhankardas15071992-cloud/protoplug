@@ -319,9 +319,9 @@ String LuaLink::callStringOverride(const char *fname, ...)
 	int numArgs = startVarargOverride(fname, args);
     va_end(args);
 	if (numArgs<0)
-		return String::empty; // state or function does not exist
+		return {}; // state or function does not exist
 	if (safepcall (fname, numArgs, 1, 0))
-		return String::empty; // function crashed
+		return {}; // function crashed
 	return safetostring();
 }
 
@@ -354,7 +354,7 @@ String LuaLink::safetostring()
 {
 	if (!ls->isstring(-1)) {
 		ls->settop(0);
-		return String::empty; // there is no string
+		return {}; // there is no string
 	}
 	String ret = ls->tostring(-1);
 	ls->settop(0);
@@ -539,4 +539,3 @@ void LuaLink::focusGained (Component::FocusChangeType cause)
 
 void LuaLink::focusLost (Component::FocusChangeType cause)
 { callVoidOverride("gui_focusLost", LUA_TNUMBER, (double)cause, 0); }
-

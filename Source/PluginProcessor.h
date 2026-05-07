@@ -1,9 +1,8 @@
 #pragma once
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "LuaLink.h"
+#include <JuceHeader.h>
+#include "ProtoplugConstants.h"
 
-
-#define NPARAMS 127
+class LuaLink;
 class ProtoWindow;
 class LuaProtoplugJuceAudioProcessor;
 class ProtoPopout;
@@ -41,7 +40,7 @@ public:
 	int getNumPrograms()									{ return 1; }
 	int getCurrentProgram()									{ return 1; }
 	void setCurrentProgram (int /*index*/)					{ }
-	const String getProgramName (int /*index*/)				{ return String::empty; }
+	const String getProgramName (int /*index*/)				{ return {}; }
 	void changeProgramName (int /*index*/, const String& /*newName*/)	{ }
 	void prepareToPlay (double /*sampleRate*/, int /*samplesPerBlock*/)	{ }
 	void releaseResources()	{ }
@@ -50,6 +49,9 @@ public:
 	ProtoWindow *getProtoEditor();
 	void setProtoEditor(ProtoWindow * _ed);
     bool parameterText2Double (int index, String text, double &d);
+    void beginParameterChangeGesture (int index);
+    void endParameterChangeGesture (int index);
+    void setParameterNotifyingHost (int index, float newValue);
 	
     int lastUIWidth, lastUIHeight, lastUISplit, lastUIPanel;
 	int lastPopoutX, lastPopoutY;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "../LuaCodeTokeniser.h"
 #include "HintedFeel.h"
 #include "DarkSplitter.h"
@@ -103,7 +103,7 @@ private:
 	ResizableCornerComponent resizer;
 	ComponentBoundsConstrainer resizeLimits;
     StretchableLayoutManager horizontalLayout;
-    ScopedPointer<DarkSplitter> horizontalDividerBar;
+    std::unique_ptr<DarkSplitter> horizontalDividerBar;
 	MenuBarComponent menubar;
 	std::map<int, File> menuFiles;
 	CodeDocument doc;
@@ -122,4 +122,3 @@ private:
 	ProtoTabButton tab1, tab2, tab3;
 	int hackTimer;
 };
-

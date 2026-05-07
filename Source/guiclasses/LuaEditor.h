@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "../PluginProcessor.h"
+#include <JuceHeader.h>
 
 class LuaEditor	:	public CodeEditorComponent, public CodeDocument::Listener
 {

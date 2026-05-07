@@ -26,7 +26,7 @@ LuaProtoplugJuceAudioProcessorEditor::LuaProtoplugJuceAudioProcessorEditor (LuaP
 	popin("pop back in"),
 	locateFiles("locate directory...")
 {
-	poppedWin = 0;
+	poppedWin.reset();
 	processor = ownerFilter;
 	ownerFilter->setProtoEditor(&content);
 	addChildComponent(&yank);
@@ -66,7 +66,7 @@ LuaProtoplugJuceAudioProcessorEditor::LuaProtoplugJuceAudioProcessorEditor (LuaP
 
 LuaProtoplugJuceAudioProcessorEditor::~LuaProtoplugJuceAudioProcessorEditor()
 {
-	if (poppedWin!=0) {
+	if (poppedWin!=nullptr) {
 		processor->lastPopoutX = poppedWin->getX();
 		processor->lastPopoutY = poppedWin->getY();
 	}
@@ -98,7 +98,7 @@ void LuaProtoplugJuceAudioProcessorEditor::paint (Graphics& g)
 
 void LuaProtoplugJuceAudioProcessorEditor::resized()
 {
-	if (poppedWin==0)
+	if (poppedWin==nullptr)
 		content.setBounds(0, 0, getWidth(), getHeight());
 }
 
@@ -109,35 +109,42 @@ void LuaProtoplugJuceAudioProcessorEditor::buttonClicked(Button *b)
 	else if (b==&popin && poppedWin)
 		popIn();
 	else if (b==&locateFiles) {
-		FileChooser fileOpen(
-			"Where did you put my ProtoplugFiles directory:", 
-			File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
-		if (fileOpen.browseForDirectory())
-		{
-			File chosen = fileOpen.getResult();
-			String missing;
-			if (ProtoplugDir::Instance()->checkDir(chosen, missing)) {
-				ProtoplugDir::Instance()->setDir(chosen);
-				if (ProtoplugDir::Instance()->getDirTextFile().create().wasOk())
-					ProtoplugDir::Instance()->getDirTextFile().replaceWithText(chosen.getFullPathName());
-				setSize (670, 455);
-				processor->luli->initProtoplugDir();
-				locateFiles.setVisible(false);
-				addAndMakeVisible(&content);
-				content.takeFocus();
-				content.initProtoplugDir();
-			} else {
-				AlertWindow::showNativeDialogBox("Protoplug", "Wrong directory: \"" + missing +
-					"\" was not found in the given directory.", false);
-			}
-		}
-	
+		directoryChooser.reset(new FileChooser(
+			"Where did you put my ProtoplugFiles directory:",
+			File::getSpecialLocation(File::currentApplicationFile).getParentDirectory()));
+
+		directoryChooser->launchAsync(FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories,
+			[this] (const FileChooser& chooser)
+			{
+				auto chosen = chooser.getResult();
+				if (chosen != File{})
+					handleProtoplugDirectoryChosen(chosen);
+			});
+	}
+}
+
+void LuaProtoplugJuceAudioProcessorEditor::handleProtoplugDirectoryChosen(const File& chosen)
+{
+	String missing;
+	if (ProtoplugDir::Instance()->checkDir(chosen, missing)) {
+		ProtoplugDir::Instance()->setDir(chosen);
+		if (ProtoplugDir::Instance()->getDirTextFile().create().wasOk())
+			ProtoplugDir::Instance()->getDirTextFile().replaceWithText(chosen.getFullPathName());
+		setSize (670, 455);
+		processor->luli->initProtoplugDir();
+		locateFiles.setVisible(false);
+		addAndMakeVisible(&content);
+		content.takeFocus();
+		content.initProtoplugDir();
+	} else {
+		AlertWindow::showNativeDialogBox("Protoplug", "Wrong directory: \"" + missing +
+			"\" was not found in the given directory.", false);
 	}
 }
 
 void LuaProtoplugJuceAudioProcessorEditor::popOut()
 {
-	poppedWin = new ProtoPopout(this, processor->getName(), Colours::white, DocumentWindow::allButtons, true);
+	poppedWin.reset(new ProtoPopout(this, processor->getName(), Colours::white, DocumentWindow::allButtons, true));
 	poppedWin->setAlwaysOnTop(processor->alwaysontop);
 	poppedWin->setResizable(true, false);
 	poppedWin->setUsingNativeTitleBar(true);
@@ -157,7 +164,7 @@ void LuaProtoplugJuceAudioProcessorEditor::popIn()
 {
 	processor->lastUIWidth = 670;
 	processor->lastUIHeight = 455;
-	if (poppedWin!=0) {
+	if (poppedWin!=nullptr) {
 		processor->lastPopoutX = poppedWin->getX();
 		processor->lastPopoutY = poppedWin->getY();
 	}
@@ -167,7 +174,7 @@ void LuaProtoplugJuceAudioProcessorEditor::popIn()
 	content.setPoppedOut(false);
 	setSize (w,h);
 	content.setSize (w,h);
-	poppedWin = 0;
+	poppedWin.reset();
 	yank.setVisible(false);
 	content.takeFocus();
 	popin.setVisible(false);
@@ -187,7 +194,7 @@ void LuaProtoplugJuceAudioProcessorEditor::handleCommandMessage(int com)
 	else if (com==MSG_ALWAYSONTOP)
 	{
 		processor->alwaysontop = !processor->alwaysontop;
-		if (poppedWin!=0)
+		if (poppedWin!=nullptr)
 			poppedWin->setAlwaysOnTop(processor->alwaysontop);
 	}
 }

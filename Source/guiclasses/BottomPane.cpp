@@ -1,5 +1,7 @@
 #include "BottomPane.h"
 #include "ProtoWindow.h"
+#include "../LuaLink.h"
+#include "../PluginProcessor.h"
 
 
 //==============================================================================

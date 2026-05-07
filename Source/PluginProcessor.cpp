@@ -9,8 +9,63 @@
 */
 
 #include "PluginProcessor.h"
+#include "LuaLink.h"
 #include "PluginEditor.h"
 #include "ProtoplugDir.h"
+
+
+class ProtoplugParameter : public AudioProcessorParameter
+{
+public:
+	ProtoplugParameter (LuaProtoplugJuceAudioProcessor& ownerIn, int indexIn)
+		: AudioProcessorParameter (1), owner (ownerIn), index (indexIn)
+	{
+	}
+
+	float getValue() const override
+	{
+		return owner.getParameter(index);
+	}
+
+	void setValue (float newValue) override
+	{
+		owner.setParameter(index, newValue);
+	}
+
+	float getDefaultValue() const override
+	{
+		return owner.getParameterDefaultValue(index);
+	}
+
+	String getName (int maximumStringLength) const override
+	{
+		auto name = owner.getParameterName(index);
+		return maximumStringLength > 0 ? name.substring(0, maximumStringLength) : name;
+	}
+
+	String getLabel() const override
+	{
+		return {};
+	}
+
+	String getText (float /*normalisedValue*/, int maximumStringLength) const override
+	{
+		auto text = owner.getParameterText(index);
+		return maximumStringLength > 0 ? text.substring(0, maximumStringLength) : text;
+	}
+
+	float getValueForText (const String& text) const override
+	{
+		double parsedValue = 0.0;
+		if (owner.parameterText2Double(index, text, parsedValue))
+			return (float) parsedValue;
+		return text.getFloatValue();
+	}
+
+private:
+	LuaProtoplugJuceAudioProcessor& owner;
+	int index;
+};
 
 
 //==============================================================================
@@ -25,12 +80,17 @@ LuaProtoplugJuceAudioProcessor::LuaProtoplugJuceAudioProcessor()
 	popout = alwaysontop = liveMode = false;
 	for (int i=0; i<NPARAMS; i++)
 		params[i] = 0.5;
+	for (int i=0; i<NPARAMS; i++)
+		addParameter(new ProtoplugParameter(*this, i));
 	chunk = 0;
 	luli = new LuaLink(this);
 }
 
 LuaProtoplugJuceAudioProcessor::~LuaProtoplugJuceAudioProcessor()
 {
+	delete luli;
+	if (chunk)
+		delete[] chunk;
 }
 
 //==============================================================================
@@ -55,14 +115,14 @@ void LuaProtoplugJuceAudioProcessor::setParameter (int index, float newValue)
 const String LuaProtoplugJuceAudioProcessor::getParameterName (int index)
 {
 	if (index >= NPARAMS)
-		return String::empty;
+		return {};
 	return luli->getParameterName(index);
 }
 
 const String LuaProtoplugJuceAudioProcessor::getParameterText (int index)
 {
 	if (index >= NPARAMS)
-		return String::empty;
+		return {};
 	String s = luli->getParameterText(index);
 	if (s.isEmpty())
 		s = String(params[index], 4);
@@ -74,6 +134,32 @@ bool LuaProtoplugJuceAudioProcessor::parameterText2Double (int index, String tex
 	if (index >= NPARAMS)
 		return false;
 	return luli->parameterText2Double(index, text, d);
+}
+
+void LuaProtoplugJuceAudioProcessor::beginParameterChangeGesture (int index)
+{
+	if (index >= NPARAMS)
+		return;
+	if (auto* parameter = getParameters()[index])
+		parameter->beginChangeGesture();
+}
+
+void LuaProtoplugJuceAudioProcessor::endParameterChangeGesture (int index)
+{
+	if (index >= NPARAMS)
+		return;
+	if (auto* parameter = getParameters()[index])
+		parameter->endChangeGesture();
+}
+
+void LuaProtoplugJuceAudioProcessor::setParameterNotifyingHost (int index, float newValue)
+{
+	if (index >= NPARAMS)
+		return;
+	if (auto* parameter = getParameters()[index])
+		parameter->setValueNotifyingHost(newValue);
+	else
+		setParameter(index, newValue);
 }
 
 double LuaProtoplugJuceAudioProcessor::getTailLengthSeconds() const
@@ -145,7 +231,7 @@ void LuaProtoplugJuceAudioProcessor::setStateInformation (const void* data, int 
 	int sz_script = *pi++;				// get size of code
 	char *pc = (char*)(pi);
 	luli->code = pc;					// get code
-	luli->saveData = String::empty;
+	luli->saveData = {};
 	if (ProtoplugDir::Instance()->found)
 		luli->compile();
 	else
