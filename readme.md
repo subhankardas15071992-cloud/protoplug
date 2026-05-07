@@ -10,7 +10,7 @@ Supported plugin formats
 ------------------------
 - macOS: universal AUv2, VST3, CLAP, and LV2 for `arm64` and `x86_64`
 - Windows: 64-bit VST3, CLAP, and LV2
-- Linux: 64-bit VST3, CLAP, and LV2
+- Linux: 64-bit CLAP, and LV2
 
 Building from source
 --------------------
