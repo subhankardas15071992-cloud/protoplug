@@ -7,7 +7,7 @@ Protoplug is a plugin that lets you load and edit Lua scripts as audio effects a
 This fork modernizes Protoplug as version 1.5.0.
 
 Link for supporting the Re-Animator Project
-===========================================
+-------------------------------------------
 This is the first of many plugins to be revived under the Nebula Audio Re-Animator Project, you can support the project by donating via the following link:
 https://subhankar42.gumroad.com/l/xdmspy
 
