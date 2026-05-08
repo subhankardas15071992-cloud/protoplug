@@ -8,6 +8,8 @@ This fork modernizes Protoplug as version 1.5.0.
 
 <img width="1440" height="900" alt="Image" src="https://github.com/user-attachments/assets/46a141c5-3a1c-4b17-af0f-b4fd829b39ef" />
 
+---
+
 <img width="1440" height="900" alt="image" src="https://github.com/user-attachments/assets/04e2acee-8ba1-44c8-84fc-f10264591303" />
 
 Link for supporting the Re-Animator Project
