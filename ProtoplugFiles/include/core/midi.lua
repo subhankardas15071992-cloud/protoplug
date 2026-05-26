@@ -152,15 +152,16 @@ midi.Event = setmetatable ({}, {
 	-- @display midi.Event
 	-- @function midi.Event
 	__call = function(self, ...)
-		if select("#", ...)==1 then
+		local argc = select("#", ...)
+		if argc==1 then
 			local o = ...
 			local n = ffi.new("MidiEvent", o.dataSize, o.time, o.dataSize)
 			ffi.copy(n.data, o.data, o.dataSize)
 			return n
-		elseif select("#", ...)==2 then
+		elseif argc==2 or argc==3 then
 			local time, dataSize, data = ...
 			local n = ffi.new("MidiEvent", dataSize, time, dataSize)
-			if data then 
+			if data then
 				for k,v in ipairs(data) do n.data[k-1] = v end
 			else
 				ffi.fill(n.data, dataSize)

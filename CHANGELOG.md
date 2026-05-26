@@ -13,3 +13,7 @@
 - Dropped LV2 support on macOS and Windows. LV2 remains supported on Linux, where Protoplug can use the shared `/usr/share/ProtoplugFiles` resource folder.
 - Updated `stereoFx` and `polyGen` helpers so existing stereo scripts remain compatible while multi-channel layouts can be processed.
 - Updated plugin metadata, release tooling version, default script welcome text, and documentation to 1.5.1.
+
+### Fixed
+
+- Fixed `midi.Event(time, dataSize, data)` so the documented data-table constructor returns a MIDI event instead of no value.
