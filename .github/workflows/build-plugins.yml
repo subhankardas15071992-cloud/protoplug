@@ -25,8 +25,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: protoplug-1.5.0-macos-universal
-          path: dist/protoplug-1.5.0-macos-universal.zip
+          name: protoplug-macos-universal
+          path: dist/protoplug-*-macos-universal.zip
 
   build-linux:
     name: Linux x64
@@ -63,8 +63,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: protoplug-1.5.0-linux-x64
-          path: dist/protoplug-1.5.0-linux-x64.zip
+          name: protoplug-linux-x64
+          path: dist/protoplug-*-linux-x64.zip
 
   build-windows:
     name: Windows x64
@@ -80,5 +80,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: protoplug-1.5.0-windows-x64
-          path: dist/protoplug-1.5.0-windows-x64.zip
+          name: protoplug-windows-x64
+          path: dist/protoplug-*-windows-x64.zip

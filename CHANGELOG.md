@@ -17,3 +17,4 @@
 ### Fixed
 
 - Fixed `midi.Event(time, dataSize, data)` so the documented data-table constructor returns a MIDI event instead of no value.
+- Fixed package scripts and GitHub Actions artifact upload paths so they use the current release version instead of the old 1.5.0 package names.

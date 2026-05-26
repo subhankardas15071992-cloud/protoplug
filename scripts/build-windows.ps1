@@ -9,7 +9,11 @@ param(
 $ErrorActionPreference = "Stop"
 
 $RootDir = Resolve-Path (Join-Path $PSScriptRoot "..")
-$Version = "1.5.0"
+$VersionFile = Join-Path $RootDir "DevScripts/resources/version.txt"
+$Version = (Get-Content -LiteralPath $VersionFile -Raw).Trim()
+if ([string]::IsNullOrWhiteSpace($Version)) {
+    throw "Unable to read package version from DevScripts/resources/version.txt"
+}
 
 if ([string]::IsNullOrWhiteSpace($BuildDir)) {
     $BuildDir = Join-Path $RootDir "build/windows-x64"

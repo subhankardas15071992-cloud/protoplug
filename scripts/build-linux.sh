@@ -2,7 +2,11 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION="1.5.0"
+VERSION="$(tr -d '[:space:]' < "$ROOT_DIR/DevScripts/resources/version.txt")"
+if [[ -z "$VERSION" ]]; then
+    echo "Unable to read package version from DevScripts/resources/version.txt" >&2
+    exit 1
+fi
 CONFIG="${CONFIG:-Release}"
 BUILD_DIR="${BUILD_DIR:-"$ROOT_DIR/build/linux-x64"}"
 DIST_DIR="${DIST_DIR:-"$ROOT_DIR/dist"}"
