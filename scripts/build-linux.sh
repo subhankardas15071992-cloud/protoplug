@@ -66,6 +66,8 @@ copy_artifact "$BUILD_DIR/protoplug_gen_artefacts/$CONFIG/LV2/Lua Protoplug Gen.
 
 cp -R "$ROOT_DIR/ProtoplugFiles" "$PACKAGE_DIR/"
 cp "$ROOT_DIR/readme.md" "$ROOT_DIR/license.txt" "$PACKAGE_DIR/"
+cp "$ROOT_DIR/scripts/install-linux.sh" "$PACKAGE_DIR/install-linux.sh"
+chmod +x "$PACKAGE_DIR/install-linux.sh"
 
 (
     cd "$DIST_DIR"

@@ -8,6 +8,10 @@ These scripts build Protoplug 1.5.0 in Release mode and create a zip package in 
 
 The packages include the built plugins, `ProtoplugFiles`, `readme.md`, and `license.txt`.
 
+The Linux package also includes `install-linux.sh`. After unpacking the zip, run it from
+the package folder to install the plugins into the current user's standard plugin folders
+and `ProtoplugFiles` into `/usr/share/ProtoplugFiles`.
+
 Set `PROTOPLUG_JUCE_DIR` or `PROTOPLUG_CLAP_JUCE_EXTENSIONS_DIR` to use local checkouts instead of CMake fetching them.
 
 ## macOS runtime libraries
