@@ -45,7 +45,7 @@ fi
 cmake "${build_args[@]}"
 
 rm -rf "$PACKAGE_DIR" "$ZIP_PATH"
-mkdir -p "$PACKAGE_DIR/Plugins/AU" "$PACKAGE_DIR/Plugins/VST3" "$PACKAGE_DIR/Plugins/CLAP" "$PACKAGE_DIR/Plugins/LV2"
+mkdir -p "$PACKAGE_DIR/Plugins/AU" "$PACKAGE_DIR/Plugins/VST3" "$PACKAGE_DIR/Plugins/CLAP"
 
 copy_artifact() {
     local src="$1"
@@ -62,11 +62,9 @@ copy_artifact() {
 copy_artifact "$BUILD_DIR/protoplug_fx_artefacts/$CONFIG/AU/Lua Protoplug Fx.component" "$PACKAGE_DIR/Plugins/AU"
 copy_artifact "$BUILD_DIR/protoplug_fx_artefacts/$CONFIG/VST3/Lua Protoplug Fx.vst3" "$PACKAGE_DIR/Plugins/VST3"
 copy_artifact "$BUILD_DIR/protoplug_fx_artefacts/$CONFIG/CLAP/Lua Protoplug Fx.clap" "$PACKAGE_DIR/Plugins/CLAP"
-copy_artifact "$BUILD_DIR/protoplug_fx_artefacts/$CONFIG/LV2/Lua Protoplug Fx.lv2" "$PACKAGE_DIR/Plugins/LV2"
 copy_artifact "$BUILD_DIR/protoplug_gen_artefacts/$CONFIG/AU/Lua Protoplug Gen.component" "$PACKAGE_DIR/Plugins/AU"
 copy_artifact "$BUILD_DIR/protoplug_gen_artefacts/$CONFIG/VST3/Lua Protoplug Gen.vst3" "$PACKAGE_DIR/Plugins/VST3"
 copy_artifact "$BUILD_DIR/protoplug_gen_artefacts/$CONFIG/CLAP/Lua Protoplug Gen.clap" "$PACKAGE_DIR/Plugins/CLAP"
-copy_artifact "$BUILD_DIR/protoplug_gen_artefacts/$CONFIG/LV2/Lua Protoplug Gen.lv2" "$PACKAGE_DIR/Plugins/LV2"
 
 cp -R "$ROOT_DIR/ProtoplugFiles" "$PACKAGE_DIR/"
 cp "$ROOT_DIR/readme.md" "$ROOT_DIR/license.txt" "$PACKAGE_DIR/"
@@ -75,9 +73,6 @@ if command -v codesign >/dev/null 2>&1; then
     find "$PACKAGE_DIR/Plugins" \
         \( -name "*.component" -o -name "*.vst3" -o -name "*.clap" \) \
         -exec codesign --force --deep --sign - {} \;
-
-    find "$PACKAGE_DIR/Plugins/LV2" -name "*.so" \
-        -exec codesign --force --sign - {} \;
 fi
 
 (

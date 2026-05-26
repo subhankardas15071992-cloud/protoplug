@@ -53,8 +53,7 @@ Remove-Item -LiteralPath $PackageDir -Recurse -Force -ErrorAction SilentlyContin
 Remove-Item -LiteralPath $ZipPath -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path `
     (Join-Path $PackageDir "Plugins/VST3"), `
-    (Join-Path $PackageDir "Plugins/CLAP"), `
-    (Join-Path $PackageDir "Plugins/LV2") | Out-Null
+    (Join-Path $PackageDir "Plugins/CLAP") | Out-Null
 
 function Copy-Artifact {
     param(
@@ -71,10 +70,8 @@ function Copy-Artifact {
 
 Copy-Artifact (Join-Path $BuildDir "protoplug_fx_artefacts/$Config/VST3/Lua Protoplug Fx.vst3") (Join-Path $PackageDir "Plugins/VST3")
 Copy-Artifact (Join-Path $BuildDir "protoplug_fx_artefacts/$Config/CLAP/Lua Protoplug Fx.clap") (Join-Path $PackageDir "Plugins/CLAP")
-Copy-Artifact (Join-Path $BuildDir "protoplug_fx_artefacts/$Config/LV2/Lua Protoplug Fx.lv2") (Join-Path $PackageDir "Plugins/LV2")
 Copy-Artifact (Join-Path $BuildDir "protoplug_gen_artefacts/$Config/VST3/Lua Protoplug Gen.vst3") (Join-Path $PackageDir "Plugins/VST3")
 Copy-Artifact (Join-Path $BuildDir "protoplug_gen_artefacts/$Config/CLAP/Lua Protoplug Gen.clap") (Join-Path $PackageDir "Plugins/CLAP")
-Copy-Artifact (Join-Path $BuildDir "protoplug_gen_artefacts/$Config/LV2/Lua Protoplug Gen.lv2") (Join-Path $PackageDir "Plugins/LV2")
 
 Copy-Item -LiteralPath (Join-Path $RootDir "ProtoplugFiles") -Destination $PackageDir -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $RootDir "readme.md") -Destination $PackageDir -Force

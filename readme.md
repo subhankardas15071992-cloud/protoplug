@@ -19,9 +19,21 @@ https://subhankar42.gumroad.com/l/xdmspy
 
 Supported plugin formats
 ------------------------
-- macOS: universal AUv2, VST3, CLAP, and LV2 for `arm64` and `x86_64`
-- Windows: 64-bit VST3, CLAP, and LV2
-- Linux: 64-bit CLAP, and LV2
+- macOS: universal AUv2, VST3, and CLAP for `arm64` and `x86_64`
+- Windows: 64-bit VST3 and CLAP
+- Linux: 64-bit VST3, CLAP, and LV2
+
+LV2 is provided on Linux only. Protoplug is designed around one shared
+`ProtoplugFiles` folder used by both the FX and Gen plugins. On Linux,
+Protoplug already looks for that folder in `/usr/share/ProtoplugFiles`, a
+standard system-wide location for shared application data, so VST3, CLAP, and
+LV2 can all use the same installed resources. On macOS and Windows, Protoplug's
+resource lookup is based around the plugin location instead of a single
+system-wide LV2 resource path. Since LV2 bundles are expected to be
+self-contained, supporting LV2 there would either require duplicating
+`ProtoplugFiles` into separate FX and Gen bundles or adding a new platform
+installer/resource-location convention just for LV2. The macOS and Windows
+builds therefore focus on AUv2, VST3, and CLAP.
 
 Building from source
 --------------------
