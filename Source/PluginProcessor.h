@@ -23,6 +23,7 @@ public:
     double getTailLengthSeconds() const;
     void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);
+    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
 
 	// some inlined overrides
 	const String getInputChannelName (int channelIndex) const	{ return String (channelIndex + 1); }

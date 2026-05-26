@@ -1,9 +1,9 @@
---- Use this module to create a stereo effect.
+--- Use this module to create a per-channel effect.
 -- Example at @{classic-filter.lua}.
 --
 -- This module acts as a layer that conceals the @{plugin.processBlock} function, 
--- manages stereo channels, and exposes the `stereoFx.Channel` prototype for you 
--- define per-channel audio processing. Initialize it by calling `stereoFx.init`.
+-- manages channels, and exposes the `stereoFx.Channel` prototype for you define
+-- per-channel audio processing. Initialize it by calling `stereoFx.init`.
 --
 -- The `stereoFx` global is available to every protoplug script after including the 
 -- main protoplug header :
@@ -17,7 +17,7 @@
 -- @function stereoFx.init
 
 --- Channel.
--- This class represents a channel (ie. left or right).
+-- This class represents a channel.
 -- <br><br>
 -- @type stereoFx.Channel
 
@@ -44,14 +44,30 @@ function Channel:new (o)
 	return o
 end
 
-local LChannel = Channel:new{  }
-local RChannel = Channel:new{  }
+local LChannel = Channel:new{ index = 1 }
+local RChannel = Channel:new{ index = 2 }
+local channels = { LChannel, RChannel }
+
+local function ensureChannels()
+	local nChannels = plugin.numChannels or 2
+	for i = 1,nChannels do
+		if channels[i] == nil then
+			channels[i] = Channel:new{ index = i }
+			if Channel.init~=nil then
+				channels[i]:init()
+			end
+		end
+	end
+	return nChannels
+end
 
 function stereoFx.init()
 	function plugin.processBlock (samples, smax)
 		if Channel.processBlock==nil then return 0 end
-		LChannel:processBlock(samples[0], smax)
-		RChannel:processBlock(samples[1], smax)
+		local nChannels = ensureChannels()
+		for i = 1,nChannels do
+			channels[i]:processBlock(samples[i - 1], smax)
+		end
 	end
 
 	script.addHandler("init", function ()
@@ -60,10 +76,15 @@ function stereoFx.init()
 			RChannel:init()
 		end
 	end)
+
+	if plugin.addHandler then
+		plugin.addHandler("prepareToPlay", ensureChannels)
+	end
 end
 
 stereoFx.Channel = Channel
 stereoFx.LChannel = LChannel
 stereoFx.RChannel = RChannel
+stereoFx.channels = channels
 
 return stereoFx

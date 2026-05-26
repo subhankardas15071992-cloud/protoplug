@@ -37,6 +37,17 @@ local plugin = {}
 
 local sampleRate
 
+plugin.maxChannels = protoplug_max_channels or 64
+plugin.numInputChannels = 2
+plugin.numOutputChannels = 2
+plugin.numChannels = 2
+
+local function updateChannelCounts(numInputChannels, numOutputChannels)
+	plugin.numInputChannels = numInputChannels or plugin.numInputChannels
+	plugin.numOutputChannels = numOutputChannels or plugin.numOutputChannels
+	plugin.numChannels = math.max(plugin.numInputChannels, plugin.numOutputChannels)
+end
+
 script.addHandler("init", function ()
 	--- Override functions.
 	-- Define these functions and the host will call them.
@@ -47,27 +58,30 @@ script.addHandler("init", function ()
 	--- Process Audio Block.
 	-- Override this function to input and output audio and MIDI data.
 	--
-	-- This override is handled automatically if @{stereoFx} or @{polyGen} are used. 
+	-- This override is handled automatically if @{stereoFx}, @{multiIO}, or @{polyGen} are used.
 	-- Use this function to handle the raw data instead.
-	-- @param samples a C float** pointing to two channels of samples, serving as input and output
+	-- @param samples a C float** pointing to all audio channels, serving as input and output
 	-- @param smax the maximum sample index (nSamples - 1)
 	-- @tparam midi.Buffer midiBuf the MIDI data for this block, serving as input and output
 	-- @usage function plugin.processBlock (samples, smax) -- let's ignore midi for this example
 	--     for i = 0, smax do
-	--         samples[0][i] = sin(myTime) -- left channel
-	--         samples[1][i] = sin(myTime) -- right channel
+	--         for ch = 0, plugin.numChannels - 1 do
+	--             samples[ch][i] = sin(myTime)
+	--         end
 	--         myTime = myTime + myDelta
 	--     end
 	-- end
 	-- @function plugin.processBlock
 	local dbged = false
-	if type(plugin.processBlock) == "function" then
+	if type(plugin.processBlock) == "function"
+	or (multiIO and multiIO.Channel and type(multiIO.Channel.processBlock) == "function") then
 		local prepared = false
-		function plugin_processBlock(nSamples, samples, midiBuf, playHead, _sampleRate)
+		function plugin_processBlock(nSamples, samples, midiBuf, playHead, _sampleRate, _numInputChannels, _numOutputChannels)
 			if not dbged then
 				dbged=true
 			end
 			sampleRate = _sampleRate
+			updateChannelCounts(_numInputChannels, _numOutputChannels)
 			if not prepared then
 				prepared = true
 				if plugin.prepareToPlay then
@@ -153,6 +167,18 @@ function plugin.getParameter(index)
 	return plugin_params[index]
 end
 plugin_params = ffi.typeof("const double *")(plugin_params)
+
+function plugin.getNumInputChannels()
+	return plugin.numInputChannels
+end
+
+function plugin.getNumOutputChannels()
+	return plugin.numOutputChannels
+end
+
+function plugin.getNumChannels()
+	return plugin.numChannels
+end
 
 --- Get host position info, if available.
 -- Only call this from within @{processBlock}.

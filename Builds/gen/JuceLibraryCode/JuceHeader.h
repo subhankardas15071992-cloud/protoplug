@@ -39,7 +39,7 @@ namespace ProjectInfo
 {
     const char* const  projectName    = "protoplug_gen";
     const char* const  companyName    = "osar.fr";
-    const char* const  versionString  = "1.5.0";
-    const int          versionNumber  = 0x10500;
+    const char* const  versionString  = "1.5.1";
+    const int          versionNumber  = 0x10501;
 }
 #endif

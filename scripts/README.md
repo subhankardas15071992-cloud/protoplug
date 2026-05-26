@@ -1,6 +1,6 @@
 # Protoplug build scripts
 
-These scripts build Protoplug 1.5.0 in Release mode and create a zip package in `dist/`.
+These scripts build Protoplug 1.5.1 in Release mode and create a zip package in `dist/`.
 
 - macOS: `scripts/build-macos.sh`
 - Linux: `scripts/build-linux.sh`
@@ -22,6 +22,7 @@ separate FX and Gen bundles or adding a separate platform-specific shared
 resource convention only for LV2.
 
 The packages include the built plugins, `ProtoplugFiles`, `readme.md`, and `license.txt`.
+Release-specific changes are listed in `RELEASE_NOTES.md` and `CHANGELOG.md`.
 
 The Linux package also includes `install-linux.sh`. After unpacking the zip, run it from
 the package folder to install the plugins into the current user's standard plugin folders

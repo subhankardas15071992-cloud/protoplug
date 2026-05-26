@@ -70,6 +70,12 @@ private:
 
 //==============================================================================
 LuaProtoplugJuceAudioProcessor::LuaProtoplugJuceAudioProcessor()
+#ifdef _PROTOGEN
+	: AudioProcessor (BusesProperties().withOutput ("Output", AudioChannelSet::stereo(), true))
+#else
+	: AudioProcessor (BusesProperties().withInput ("Input", AudioChannelSet::stereo(), true)
+									 .withOutput ("Output", AudioChannelSet::stereo(), true))
+#endif
 {
     lastUIWidth = 670;
     lastUIHeight = 455;
@@ -167,10 +173,37 @@ double LuaProtoplugJuceAudioProcessor::getTailLengthSeconds() const
     return luli->getTailLengthSeconds();
 }
 
+bool LuaProtoplugJuceAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+{
+	auto isSupportedChannelCount = [] (int channels)
+	{
+		return channels >= 1 && channels <= MAX_AUDIO_CHANNELS;
+	};
+
+	const int numInputChannels = layouts.inputBuses.size() > 0 ? layouts.inputBuses[0].size() : 0;
+	const int numOutputChannels = layouts.outputBuses.size() > 0 ? layouts.outputBuses[0].size() : 0;
+
+#ifdef _PROTOGEN
+	if (layouts.inputBuses.size() != 0 || layouts.outputBuses.size() != 1)
+		return false;
+
+	return numInputChannels == 0 && isSupportedChannelCount (numOutputChannels);
+#else
+	if (layouts.inputBuses.size() != 1 || layouts.outputBuses.size() != 1)
+		return false;
+
+	return numInputChannels == numOutputChannels && isSupportedChannelCount (numOutputChannels);
+#endif
+}
+
 //==============================================================================
 
 void LuaProtoplugJuceAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
+#ifdef _PROTOGEN
+	buffer.clear();
+#endif
+
 	luli->processBlock(buffer, midiMessages, getPlayHead());
 	midiMessages.data;
 }

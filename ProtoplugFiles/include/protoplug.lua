@@ -14,6 +14,6 @@ midi 		= require "include/core/midi"
 script 		= require "include/core/script"
 plugin 		= require "include/core/plugin"
 gui 		= require "include/core/gui"
+multiIO 	= require "include/core/multiio"
 polyGen 	= require "include/core/polygen"
 stereoFx 	= require "include/core/stereofx"
-

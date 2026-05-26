@@ -4,7 +4,7 @@ Create audio plugins on-the-fly with LuaJIT.
 
 Protoplug is a plugin that lets you load and edit Lua scripts as audio effects and instruments. Scripts can process audio and MIDI, draw their own interface, and use external libraries. It turns a DAW into a live coding environment for audio.
 
-This fork modernizes Protoplug as version 1.5.0.
+This fork modernizes Protoplug as version 1.5.1.
 
 <img width="1440" height="900" alt="Image" src="https://github.com/user-attachments/assets/46a141c5-3a1c-4b17-af0f-b4fd829b39ef" />
 
@@ -22,6 +22,11 @@ Supported plugin formats
 - macOS: universal AUv2, VST3, and CLAP for `arm64` and `x86_64`
 - Windows: 64-bit VST3 and CLAP
 - Linux: 64-bit VST3, CLAP, and LV2
+
+Audio layouts up to 64 channels are supported where the host and plugin format
+allow them. Existing stereo scripts continue to work, while multi-channel
+scripts can use `plugin.numChannels`, `plugin.numInputChannels`,
+`plugin.numOutputChannels`, or the `multiIO` helper.
 
 LV2 is provided on Linux only. Protoplug is designed around one shared
 `ProtoplugFiles` folder used by both the FX and Gen plugins. On Linux,
@@ -56,6 +61,10 @@ scripts/build-windows.ps1
 ```
 
 Each script builds Release plugins and creates a zip in `dist/` containing the plugin artifacts, `ProtoplugFiles`, this README, and the license.
+
+Release Notes
+-------------
+See `RELEASE_NOTES.md` and `CHANGELOG.md` for version-specific changes.
 
 Runtime libraries
 -----------------

@@ -128,6 +128,8 @@ void LuaLink::compile() {
 	ls->setglobal("protoplug_dir");
 	ls->pushnumber(1);
 	ls->setglobal("protoplug_version");
+	ls->pushnumber(MAX_AUDIO_CHANNELS);
+	ls->setglobal("protoplug_max_channels");
 	ls->pushlightuserdata((AudioProcessor *)pfx);
 	ls->setglobal("plugin_effect");
 
@@ -393,14 +395,16 @@ double LuaLink::getTailLengthSeconds()
 void LuaLink::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages, AudioPlayHead* ph)
 {
 	bool res = callVoidOverride("plugin_processBlock"	, LUA_TNUMBER, (double)buffer.getNumSamples(),
-									LUA_TLIGHTUSERDATA, buffer.getArrayOfReadPointers(),
+									LUA_TLIGHTUSERDATA, (void*)buffer.getArrayOfWritePointers(),
 									LUA_TLIGHTUSERDATA, &midiMessages,
 									LUA_TLIGHTUSERDATA, ph,
 									LUA_TNUMBER, pfx->getSampleRate(),
+									LUA_TNUMBER, (double)pfx->getTotalNumInputChannels(),
+									LUA_TNUMBER, (double)pfx->getTotalNumOutputChannels(),
 									0);
 #ifdef _PROTOGEN
 	if (!res) {
-		for (int channel = 0; channel < pfx->getNumOutputChannels(); ++channel)
+		for (int channel = 0; channel < pfx->getTotalNumOutputChannels(); ++channel)
 		{
 			buffer.clear (channel, 0, buffer.getNumSamples());
 		}

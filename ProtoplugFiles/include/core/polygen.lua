@@ -32,7 +32,7 @@
 --
 -- This method is called successively on every track, 
 -- which should *add* their output to `samples`.
--- @param samples a C `float**` pointing to two channels of samples to add to.
+-- @param samples a C `float**` pointing to all output channels of samples to add to.
 -- @param smax the maximum sample index (nSamples - 1)
 -- @see sine-organ.lua
 -- @function VTrack:addProcessBlock
@@ -131,8 +131,9 @@ function polyGen.initTracks(n)
 			processMidiEvent(msg)
 		end
 		for i=0,smax do
-			samples[0][i] = 0
-			samples[1][i] = 0
+			for ch = 0,plugin.numOutputChannels - 1 do
+				samples[ch][i] = 0
+			end
 		end
 		for i=1,VTrack.numTracks do
 			if VTrack.addProcessBlock~=nil then

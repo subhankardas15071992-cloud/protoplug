@@ -10,7 +10,7 @@ if(APPLE)
     endif()
 endif()
 
-project(Protoplug VERSION 1.5.0 LANGUAGES C CXX)
+project(Protoplug VERSION 1.5.1 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -204,7 +204,7 @@ protoplug_add_plugin(protoplug_fx
     PLUGIN_CODE "ppgf"
     LV2_URI "urn:pac:protoplug:fx"
     CLAP_ID "com.pac.protoplug.fx"
-    CLAP_FEATURES audio-effect stereo
+    CLAP_FEATURES audio-effect stereo surround
     VST3_CATEGORIES Fx
 )
 
@@ -217,7 +217,7 @@ protoplug_add_plugin(protoplug_gen
     PLUGIN_CODE "ppgg"
     LV2_URI "urn:pac:protoplug:gen"
     CLAP_ID "com.pac.protoplug.gen"
-    CLAP_FEATURES instrument stereo
+    CLAP_FEATURES instrument stereo surround
     VST3_CATEGORIES Instrument Synth
 )
 
