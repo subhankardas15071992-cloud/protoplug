@@ -91,6 +91,7 @@ public:
 		cmdCut			= StandardApplicationCommandIDs::cut,
 		cmdCopy			= StandardApplicationCommandIDs::copy,
 		cmdPaste		= StandardApplicationCommandIDs::paste,
+		cmdSelectAll	= StandardApplicationCommandIDs::selectAll,
     };
 
 private:
