@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.1 - 2026-05-26
+## 1.6.0 - 2026-05-31
 
 ### Added
 
@@ -12,7 +12,7 @@
 
 - Dropped LV2 support on macOS and Windows. LV2 remains supported on Linux, where Protoplug can use the shared `/usr/share/ProtoplugFiles` resource folder.
 - Updated `stereoFx` and `polyGen` helpers so existing stereo scripts remain compatible while multi-channel layouts can be processed.
-- Updated plugin metadata, release tooling version, default script welcome text, and documentation to 1.5.1.
+- Updated plugin metadata, release tooling version, default script welcome text, and documentation to 1.6.0.
 
 ### Fixed
 

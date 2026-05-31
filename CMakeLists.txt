@@ -10,7 +10,7 @@ if(APPLE)
     endif()
 endif()
 
-project(Protoplug VERSION 1.5.1 LANGUAGES C CXX)
+project(Protoplug VERSION 1.6.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

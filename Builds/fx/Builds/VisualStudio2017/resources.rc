@@ -15,9 +15,9 @@ BEGIN
     BEGIN
       VALUE "CompanyName",  "osar.fr\0"
       VALUE "FileDescription",  "protoplug_fx\0"
-      VALUE "FileVersion",  "1.5.1\0"
+      VALUE "FileVersion",  "1.6.0\0"
       VALUE "ProductName",  "protoplug_fx\0"
-      VALUE "ProductVersion",  "1.5.1\0"
+      VALUE "ProductVersion",  "1.6.0\0"
     END
   END
 

@@ -1,6 +1,6 @@
 # Protoplug build scripts
 
-These scripts build Protoplug 1.5.1 in Release mode and create a zip package in `dist/`.
+These scripts build Protoplug 1.6.0 in Release mode and create a zip package in `dist/`.
 
 - macOS: `scripts/build-macos.sh`
 - Linux: `scripts/build-linux.sh`
