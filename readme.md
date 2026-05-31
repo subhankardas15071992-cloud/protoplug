@@ -4,7 +4,7 @@ Create audio plugins on-the-fly with LuaJIT.
 
 Protoplug is a plugin that lets you load and edit Lua scripts as audio effects and instruments. Scripts can process audio and MIDI, draw their own interface, and use external libraries. It turns a DAW into a live coding environment for audio.
 
-This fork modernizes Protoplug as version 1.5.1.
+This fork modernizes Protoplug
 
 <img width="1440" height="900" alt="Image" src="https://github.com/user-attachments/assets/46a141c5-3a1c-4b17-af0f-b4fd829b39ef" />
 
